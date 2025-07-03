@@ -1,3 +1,3 @@
 # OPTCG_SIM_Deck_Image_Export
 
-https://github.com/KarmaIsHere/OPTCG_SIM_Deck_Image_Export/releases/tag/v1.0.0
+Download: https://github.com/KarmaIsHere/OPTCG_SIM_Deck_Image_Export/releases/tag/v1.0.0
