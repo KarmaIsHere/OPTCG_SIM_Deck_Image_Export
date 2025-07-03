@@ -1,6 +1,5 @@
 import os
 import re
-import sys
 from PIL import Image
 import tempfile
 
@@ -45,7 +44,6 @@ def save_card_images(deck, output_folder):
                 output_name = f"{card['code']}_{i+1}" + type
                 output_path = os.path.join(output_folder, output_name)
                 img.save(output_path)
-                print(f"Saved {output_path}")
             except FileNotFoundError:
                 print(f"Image not found: {card['image_path'] + type}")
 
@@ -78,30 +76,22 @@ def create_deck_collage(image_folder, output_path, card_width=480, card_height=6
         collage.paste(img, (x, y))
 
     collage.save(output_path)
-    print(f"✅ Collage saved to: {output_path}")
 
-
-def main():
-    if len(sys.argv) < 3:
-        print("Usage: python generateDeck.py <path to op sim example: D:\Games\op> <name of deck in sim>")
-        sys.exit(1)
-
-    path = sys.argv[1] + "\\OPTCGSim_Data\\StreamingAssets\\Cards"
-    cardlist = sys.argv[1] + "\\Decks\\" + sys.argv[2] + ".deck"
+def run_deck_builder(sim_folder, deck_path, output_path):
+    path = os.path.join(sim_folder, "OPTCGSim_Data", "StreamingAssets", "Cards")
+    cardlist = os.path.join(deck_path)
+    deck_name =  os.path.basename(deck_path)
+    name_without_extension, extension = os.path.splitext(deck_name)
 
     if not os.path.exists(path):
-        print("Directory " + path + " does not exist")
-        sys.exit(1)
-
+        raise FileNotFoundError(f"Card directory not found: {path}")
     if not os.path.exists(cardlist):
-        print("File " + cardlist + " does not exist")
-        sys.exit(1)
+        raise FileNotFoundError(f"Deck file not found: {cardlist}")
 
     temp_dir = tempfile.TemporaryDirectory()
     deck = parse_deck_file(cardlist, path)
     save_card_images(deck, temp_dir.name)
-    create_deck_collage(temp_dir.name, sys.argv[2] + "_deck.png")
+    create_deck_collage(temp_dir.name, os.path.join(output_path, f"{name_without_extension}_deck.png"))
     temp_dir.cleanup()
+    return output_path
 
-if __name__ == "__main__":
-    main()
